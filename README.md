@@ -1,152 +1,117 @@
-# Saarthi 🏥
-### The Intelligent Smart Hospital Management System
+# 🏥 Saarthi | Smart Hospital Management System
 
-> Saarthi is a production-grade, AI-powered healthcare ecosystem designed to bridge the gap between patients and doctors with real-time monitoring, digital records, and intelligent diagnostic assistance.
+**Saarthi** is an intelligent Hospital Management System (HMS) designed to bridge the gap between patients, doctors, and administrators through real-time data sync, predictive queuing, and centralized health records.
 
----
-
-## 👥 Meet the Team: **CodEx** 🚀
-Managing and developing with excellence.
-
-- **Tamanpreet Kaur** ([@YourGithub](https://github.com/)) - **Team Leader** & Lead Architect
-- **Jasdeep Singh** ([@YourGithub](https://github.com/)) - Lead Full-Stack Engineer
+Developed by **Team: The Dev Circle** for **HackMol 7.0**, this project exists as a **high-fidelity feature prototype** that demonstrates the complete end-to-end vision of modern, digitized healthcare.
 
 ---
 
-## 📖 Table of Contents
-1. [Project Overview](#project-overview)
-2. [Key Features by Phase](#key-features-by-phase)
-3. [Technology Stack](#technology-stack)
-4. [Role-Based Dashboards](#role-based-dashboards)
-5. [Installation & Setup](#installation--setup)
-6. [Demo Credentials](#demo-credentials)
-7. [Environment Variables](#environment-variables)
+## 👥 Team: The Dev Circle
+- **Jasdeep Singh** (Lead)
+- **Mantej Singh**
+- **Manmohan Singh**
+- **Sehaj Singh**
+
+*Guru Nanak Dev Engineering College, Ludhiana, Punjab.*
 
 ---
 
-## 🏢 Project Overview
-Built during the **Think-a-thon**, Saarthi transforms traditional hospital workflows into a "Phygital" (Physical + Digital) experience. From real-time queue management using Socket.io to AI-powered prescription helpers using Gemini Pro, Saarthi is built for scale and speed.
+## ❗ The Problem (HackMol 7.0 Case Study)
+Hospitals today face critical challenges that lead to inefficiency and compromised patient care:
+1.  **Fragmented OPD Experience**: Unpredictable wait times (often 2-3 hours) and overcrowded clinics.
+2.  **Disconnected Medical History**: Patients lose reports; doctors lack historical insights, leading to redundant tests.
+3.  **Monitoring Gaps**: No real-time vital tracking for doctors, leading to reactive instead of proactive emergency care.
 
 ---
 
-## ✨ Key Features by Phase
-
-### 🔐 Phase 1 & 2: Architecture & Auth
-- **PWA Ready**: Mobile-first design for patients and web-heavy for doctors.
-- **RBAC (Role-Based Access Control)**: Secure JWT-driven authentication for Patients, Doctors, and Admin roles.
-
-### ⏱️ Phase 3: Live OPD Queue System
-- **Real-time Sync**: Socket.io-driven queue updates with no page refreshes.
-- **Dynamic ETA**: Automatic estimation of waiting times based on current visit speeds.
-- **Token Tracking**: Live position updates for patients on their personal dashboard.
-
-### 🤳 Phase 4: QR Presence Verification
-- **Anti-Ghosting**: Verify physical presence using a built-in QR scanner on the doctor's end.
-- **Smart Filtering**: Doctors only see "Present" patients in their active call list, ensuring zero time wasted.
-
-### 📂 Phase 5: Digital Health Records (EHR)
-- **Cloudinary Integration**: Secure medical document uploads (X-Rays, Prescriptions, Reports).
-- **Patient Privacy**: Patients control the visibility of their records; doctors can only view shared public records.
-
-### 🫀 Phase 6: Emergency Monitoring (IoT Simulation)
-- **Live Vitals**: Continuous streaming of Heart Rate (BPM), SpO2, and Blood Pressure.
-- **Critical Alerts**: Visual and audio-visual pulses on the dashboard when vitals cross life-threatening thresholds.
-- **Demo Mode**: Manual "Simulate Emergency" button for rapid-response demonstration.
-
-### 🤖 Phase 7: AI-Powered Insights (Gemini Pro)
-- **Medical Co-pilot**: Gemini Pro analyzes symptoms and patient history to suggest diagnostic tests and medications.
-- **One-Click Drafting**: Apply AI suggestions directly to the digital prescription form to save time.
+## 🌟 The Solution: Saarthi
+Saarthi transforms the hospital journey through three core pillars:
+- **Real-time Queue Management**: Dynamic token allocation and live ETA tracking.
+- **Unified Digital Health Records (EHR)**: Secure, centralized, and timeline-based history.
+- **ICU-Grade Monitoring**: Live vitals streaming with threshold-based smart alerts.
 
 ---
 
-## 🛠️ Technology Stack
+## 📸 Project Walkthrough
 
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend** | React.js (Vite), Tailwind CSS, Lucide Icons |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB (Mongoose) |
-| **Real-time** | Socket.io |
-| **AI Engine** | Google Gemini Pro API |
-| **Storage** | Cloudinary (EHR Documents) |
-| **PWA** | Vite-PWA-Plugin |
+### 1. Landing Page
+The gateway featuring a live system status overview and the core workflow: Check-in → Queue → Consultation → Follow-up.
+![Landing Page](docs/screenshots/landing.png)
 
----
+### 2. Patient Dashboard
+Live token status (`T-002`), current position, and a real-time countdown to the consultation.
+![Patient Dashboard](docs/screenshots/patient_dashboard.png)
 
-## 🖥️ Role-Based Dashboards
+### 3. Doctor Dashboard
+A high-efficiency view to manage the patient queue, view urgency flags (High/Medium/Low), and navigate patient history.
+![Doctor Dashboard](docs/screenshots/doctor_dashboard.png)
 
-### 👤 Patient Dashboard
-- Book instant appointments.
-- Live token tracking and queue ETA.
-- Digital Health Folder for medical records.
-- Live heart-beat monitoring.
+### 4. Admin & Operations
+Analytics for hospital managers: Patient flow trends, department-wise load, and bed occupancy rates.
+![Admin Dashboard](docs/screenshots/admin_dashboard.png)
 
-### 👨‍⚕️ Doctor Dashboard
-- Advanced OPD Console with "Call Next" logic.
-- Built-in QR Scanner for presence verification.
-- Live Vitals Monitoring with Emergency Alert System.
-- Gemini AI Prescription Assistant.
+### 5. Health Records & Monitoring
+Comprehensive tracking of patient history and real-time vital signs monitoring with interactive sparklines.
+![Health Records](docs/screenshots/health_records.png)
+![Monitoring](docs/screenshots/monitoring.png)
 
 ---
 
-## 🛠️ Installation & Setup
+## 🏗 Prototype Implementation vs. Vision
+This repository contains a **fully functional prototype** that demonstrates the logic and UI/UX flows outlined in our ideation PPT.
 
-1. **Clone the Repository**
-   ```bash
-   git clone <repo-url>
-   cd saarthi
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   # Install Backend
-   cd server && npm install
-   
-   # Install Frontend
-   cd ../client && npm install
-   ```
-
-3. **Configure Environment Variables**
-   Create a `.env` in both folders (see [Environment Variables](#environment-variables)).
-
-4. **Run Development Mode**
-   ```bash
-   # From Root
-   npm run dev
-   ```
+| Feature from PPT | Implementation in Prototype | Mechanics |
+| :--- | :--- | :--- |
+| **Real-Time Queue Tracking** | **Implemented (Live Sync)** | Uses React `useEffect` and `setInterval` to simulate constant server-client sync for token updates. |
+| **Dynamic ETA Prediction** | **Implemented (Rule-Based)** | A calculation engine in the frontend estimates wait time based on queue length and avg. consultation duration. |
+| **Digital Health Records** | **Implemented (Timeline)** | A centralized JSON-based state (`data.js`) stores history, accessible via a timeline-based UI. |
+| **Live Vitals Monitoring** | **Implemented (Simulated IoT)** | Real-time vital signs (HR, BP, SpO2) are streamed using a simulated data pipeline and rendered with SVG sparklines. |
+| **Threshold-Based Alerts** | **Implemented (Smart Alerts)** | A rule engine evaluates vitals against predefined thresholds to trigger instant "Distress Signals" (Toasts). |
+| **RBAC (Role Based Access)** | **Implemented (Multi-Panel)** | Separate dashboards with specialized permissions for Patients, Doctors, and Admin roles. |
 
 ---
 
-## 🔑 Demo Credentials
-Use these pre-seeded accounts to experience all roles immediately:
+## 🛠 Tech Stack
 
-- **Patient**: `patient1` / `pass123`
-- **Doctor**: `doctor1` / `pass123`
-- **Admin**: `admin1` / `pass123`
+### Current Prototype
+- **Frontend**: React 19, Vite, Tailwind CSS 4, Framer Motion
+- **State/Real-time**: Context API + Simulated WebSocket streams
+- **Charts**: Custom SVG Sparklines & Lightweight Analytics components
+- **Styling**: Modern "Glassmorphic" CSS with vibrant, professional palettes
+
+### Production Roadmap (Full Stack)
+- **Backend**: Node.js + Express.js, Socket.io (for real-time WebSockets)
+- **Database**: MongoDB (Structured EHR data), Redis (Caching queue status)
+- **Storage**: AWS S3 / Cloudinary (Medical reports & images)
+- **AI/Logic**: Threshold rule engine, OpenAI/Gemini API for clinical insights
+- **IoT**: MQTT protocol for actual medical sensor integration
 
 ---
 
-## 🔐 Environment Variables
+## 📂 Project Structure
 
-### Backend (`/server/.env`)
-```env
-PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-CORS_ORIGIN=http://localhost:5173
-CLOUDINARY_CLOUD_NAME=xxx
-CLOUDINARY_API_KEY=xxx
-CLOUDINARY_API_SECRET=xxx
-GEMINI_API_KEY=xxx
-```
-
-### Frontend (`/client/.env`)
-```env
-VITE_API_URL=http://localhost:5000/api
-VITE_CLOUDINARY_CLOUD_NAME=xxx
-VITE_CLOUDINARY_UPLOAD_PRESET=xxx
+```text
+src/
+├── components/      # UI components (Navbar, Toast, Charts, Sidebar)
+├── pages/           # Landing, Dashboards, Monitoring, Records, Notifications
+├── data.js          # Core simulation data & patient database
+├── App.jsx          # Route definitions
+└── main.jsx         # Entry point
 ```
 
 ---
 
-*Made with ❤️ by Team **CodEx**.*
+## 💻 Getting Started
+
+1. **Install dependencies**: `npm install`
+2. **Launch Developer Server**: `npm run dev`
+3. **Open Access**: `http://localhost:5173`
+
+---
+
+## 🛡 Security & Reliability
+Designed for high uptime (99.9%) and zero-lag interactions. Our prototype demonstrates a **resilient UI** that handles data fluctuations gracefully.
+
+---
+
+*Saarthi - Making Healthcare Smarter | Created for HackMol 7.0*
