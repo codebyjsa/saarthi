@@ -20,6 +20,10 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['waiting', 'calling', 'in-progress', 'completed', 'skipped', 'cancelled'],
     default: 'waiting',
   },
+  isPresent: {
+    type: Boolean,
+    default: false,
+  },
   department: {
     type: String,
     default: 'General',

@@ -93,4 +93,21 @@ router.get('/my-status', protect, async (req, res) => {
   }
 });
 
+// Mark Appointment as Present (QR Scan or Manual)
+router.patch('/present/:id', protect, authorize('doctor', 'admin'), async (req, res) => {
+  try {
+    const appointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      { isPresent: true },
+      { new: true }
+    ).populate('patientId', 'name');
+
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
+
+    res.json(appointment);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating presence' });
+  }
+});
+
 module.exports = router;

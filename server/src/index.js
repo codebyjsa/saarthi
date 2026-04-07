@@ -8,6 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const queueRoutes = require('./routes/queue');
 const doctorRoutes = require('./routes/doctors');
+const recordRoutes = require('./routes/records');
 const User = require('./models/User');
 const socketHandlers = require('./socket/handlers');
 
@@ -50,6 +51,7 @@ socketHandlers(io);
 app.use('/api/auth', authRoutes);
 app.use('/api/queue', queueRoutes);
 app.use('/api/doctors', doctorRoutes);
+app.use('/api/records', recordRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Saarthi Server is running healthy' });

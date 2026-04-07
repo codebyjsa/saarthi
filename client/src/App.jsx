@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import PatientDashboard from './pages/dashboards/PatientDashboard';
 import DoctorDashboard from './pages/dashboards/DoctorDashboard';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
+import Records from './pages/Records';
 
 function App() {
   return (
@@ -21,6 +22,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['patient']}>
                 <PatientDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/records" 
+            element={
+              <ProtectedRoute allowedRoles={['patient']}>
+                <Records />
               </ProtectedRoute>
             } 
           />

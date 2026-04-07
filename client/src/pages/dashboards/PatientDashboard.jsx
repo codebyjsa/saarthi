@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../hooks/useSocket';
 import axios from 'axios';
-import { LogOut, User, Calendar, Activity, ClipboardList, Clock, Bell, ArrowRight } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { LogOut, User, Calendar, Activity, ClipboardList, Clock, Bell, ArrowRight, QrCode } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -139,6 +140,29 @@ const PatientDashboard = () => {
                   <span className="text-4xl font-black text-teal-600">~{myAppointment.position * 10} min</span>
                   <span className="text-slate-500 text-sm font-medium mt-1">Dynamic Calculation</span>
                 </div>
+                {!myAppointment.isPresent && (
+                   <div className="col-span-2 bg-slate-900 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 border border-white/10 shadow-2xl">
+                      <div className="bg-white p-4 rounded-3xl shadow-inner group hover:scale-105 transition-transform">
+                        <QRCodeSVG 
+                          value={myAppointment._id} 
+                          size={130}
+                          level={"H"}
+                          includeMargin={true}
+                        />
+                      </div>
+                      <div className="flex-1 text-center md:text-left">
+                        <div className="flex items-center gap-3 mb-2 justify-center md:justify-start text-teal-400">
+                           <QrCode size={20} />
+                           <h4 className="text-xl font-black uppercase tracking-tight text-white">Physical Check-in Required</h4>
+                        </div>
+                        <p className="text-white/60 font-medium text-sm mb-4 leading-relaxed">Show this QR code at the reception or to the doctor to mark your presence. Your queue position will only activate after check-in.</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-[10px] font-black text-white uppercase tracking-widest animate-pulse">
+                           <div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>
+                           Waiting for Scan
+                        </div>
+                      </div>
+                   </div>
+                )}
                 <div className="col-span-2 bg-slate-50 rounded-2xl p-6 flex items-center justify-between border border-slate-100">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
