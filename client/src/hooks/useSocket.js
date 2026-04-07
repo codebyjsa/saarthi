@@ -31,11 +31,9 @@ export const useSocket = (roomId) => {
     };
   }, [roomId]);
 
-  const emitEvent = (eventName, data) => {
-    if (socketRef.current) {
-      socketRef.current.emit(eventName, data);
-    }
+  const emitEvent = (event, data) => {
+    socketRef.current?.emit(event, data);
   };
 
-  return { isConnected, queueUpdate, emitEvent };
+  return { socket: socketRef.current, emitEvent, queueUpdate, isConnected };
 };

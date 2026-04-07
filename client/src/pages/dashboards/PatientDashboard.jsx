@@ -10,14 +10,23 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const PatientDashboard = () => {
   const { user, logout } = useAuth();
   const [myAppointment, setMyAppointment] = useState(null);
-  const [showBooking, setShowBooking] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showBooking, setShowBooking] = useState(false);
+  const [liveVitals, setLiveVitals] = useState({ heartRate: 72 });
+
+  const { socket, queueUpdate } = useSocket(user?._id);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('vitals-feed', (data) => {
+      setLiveVitals(data.vitals);
+    });
+    return () => socket.off('vitals-feed');
+  }, [socket]);
 
   // Default doctor for MVP (doctor1 seeded)
   // In a real app, this would be a selection
   const DR_SAMEER_ID = 'doctor1_id_placeholder'; // We'll fetch or use a hardcoded demo ID
-
-  const { queueUpdate } = useSocket(myAppointment?.doctorId?._id || null);
 
   const fetchStatus = async () => {
     try {
@@ -130,10 +139,13 @@ const PatientDashboard = () => {
                 </div>
               </div>
               <div className="p-10 flex-1 grid grid-cols-2 gap-8">
-                <div className="flex flex-col">
-                  <span className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mb-2">Position in Queue</span>
-                  <span className="text-4xl font-black text-slate-800">{myAppointment.position}</span>
-                  <span className="text-slate-500 text-sm font-medium mt-1">Patients ahead of you</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Live BPM</span>
+                  <div className="flex items-center gap-2">
+                    <Activity className="text-red-500 animate-pulse" size={16} />
+                    <span className="text-4xl font-black text-slate-800">{liveVitals.heartRate || 72}</span>
+                  </div>
+                  <span className="text-slate-500 text-sm font-medium mt-1">Real-time Feed</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mb-2">Estimated Arrival</span>

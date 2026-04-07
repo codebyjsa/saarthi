@@ -1,95 +1,122 @@
-const Appointment = require('../models/Appointment');
+const Appointment = require('../models/Record'); // Note: Make sure it's the right model
+const AppointmentModel = require('../models/Appointment');
 
-const socketHandlers = (io) => {
+const vitalsIntervals = {};
+
+module.exports = (io) => {
   io.on('connection', (socket) => {
-    console.log('Socket connected:', socket.id);
+    console.log('User connected to socket:', socket.id);
 
-    // Join a specific room (e.g., doctor's department or doctorId)
-    socket.on('join-room', (roomId) => {
-      socket.join(roomId);
-      console.log(`User ${socket.id} joined room ${roomId}`);
-    });
+    socket.on('join-doctor-room', (doctorId) => {
+      socket.join(doctorId);
+      console.log(`Socket ${socket.id} joined room: ${doctorId}`);
+      
+      // Start vitals simulation if not already running for this doctor
+      if (!vitalsIntervals[doctorId]) {
+        vitalsIntervals[doctorId] = setInterval(async () => {
+          try {
+            // Find the active patient for this doctor
+            const activeAppointment = await AppointmentModel.findOne({
+              doctorId,
+              status: 'in-progress'
+            }).populate('patientId', 'name');
 
-    // Doctor calls the next patient
-    socket.on('call-next', async ({ doctorId }) => {
-      try {
-        // Find the next waiting patient
-        const nextPatient = await Appointment.findOneAndUpdate(
-          { doctorId, status: 'waiting' },
-          { status: 'calling', startedAt: new Date() },
-          { sort: { bookedAt: 1 }, new: true }
-        ).populate('patientId', 'name');
-
-        if (nextPatient) {
-          // Notify everyone in the doctor's room
-          io.to(doctorId.toString()).emit('queue-update', {
-            type: 'CALLING',
-            appointment: nextPatient
-          });
-        }
-      } catch (error) {
-        console.error('Error calling next patient:', error);
+            if (activeAppointment) {
+              const vitals = {
+                heartRate: Math.floor(Math.random() * (100 - 70 + 1)) + 70,
+                spo2: Math.floor(Math.random() * (99 - 95 + 1)) + 95,
+                bp_sys: Math.floor(Math.random() * (130 - 110 + 1)) + 110,
+                bp_dia: Math.floor(Math.random() * (85 - 70 + 1)) + 70,
+                temp: (Math.random() * (99.2 - 97.8) + 97.8).toFixed(1),
+                timestamp: new Date()
+              };
+              
+              io.to(doctorId).emit('vitals-feed', {
+                appointmentId: activeAppointment._id,
+                vitals
+              });
+            }
+          } catch (err) {
+            console.error('Vitals simulation error:', err);
+          }
+        }, 3000); // Update every 3 seconds
       }
     });
 
-    // Doctor starts the visit (in-progress)
+    socket.on('join-patient-room', (patientId) => {
+      socket.join(patientId);
+      console.log(`Socket ${socket.id} joined patient room: ${patientId}`);
+    });
+
+    socket.on('call-next', async ({ doctorId }) => {
+      try {
+        const nextAppointment = await AppointmentModel.findOneAndUpdate(
+          { doctorId, status: 'waiting', isPresent: true }, // Only present patients
+          { status: 'calling' },
+          { new: true, sort: { tokenNumber: 1 } }
+        ).populate('patientId', 'name');
+
+        if (nextAppointment) {
+          io.to(doctorId).emit('queue-update');
+          io.to(nextAppointment.patientId._id.toString()).emit('my-status-update', nextAppointment);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
     socket.on('start-visit', async ({ appointmentId, doctorId }) => {
       try {
-        const appointment = await Appointment.findByIdAndUpdate(
+        const appointment = await AppointmentModel.findByIdAndUpdate(
           appointmentId,
           { status: 'in-progress' },
           { new: true }
         ).populate('patientId', 'name');
 
-        io.to(doctorId.toString()).emit('queue-update', {
-          type: 'IN_PROGRESS',
-          appointment
-        });
-      } catch (error) {
-        console.error('Error starting visit:', error);
+        if (appointment) {
+          io.to(doctorId).emit('queue-update');
+          io.to(appointment.patientId._id.toString()).emit('my-status-update', appointment);
+        }
+      } catch (err) {
+        console.error(err);
       }
     });
 
-    // Doctor completes the visit
     socket.on('complete-visit', async ({ appointmentId, doctorId }) => {
       try {
-        const appointment = await Appointment.findByIdAndUpdate(
-          appointmentId,
-          { status: 'completed', completedAt: new Date() },
-          { new: true }
-        ).populate('patientId', 'name');
-
-        io.to(doctorId.toString()).emit('queue-update', {
-          type: 'COMPLETED',
-          appointment
-        });
-      } catch (error) {
-        console.error('Error completing visit:', error);
+        await AppointmentModel.findByIdAndUpdate(appointmentId, { status: 'completed' });
+        io.to(doctorId).emit('queue-update');
+      } catch (err) {
+        console.error(err);
       }
     });
 
-    // Doctor skips the patient
     socket.on('skip-patient', async ({ appointmentId, doctorId }) => {
       try {
-        const appointment = await Appointment.findByIdAndUpdate(
-          appointmentId,
-          { status: 'skipped' },
-          { new: true }
-        ).populate('patientId', 'name');
-
-        io.to(doctorId.toString()).emit('queue-update', {
-          type: 'SKIPPED',
-          appointment
-        });
-      } catch (error) {
-        console.error('Error skipping patient:', error);
+        await AppointmentModel.findByIdAndUpdate(appointmentId, { status: 'skipped' });
+        io.to(doctorId).emit('queue-update');
+      } catch (err) {
+        console.error(err);
       }
+    });
+
+    // Handle Manual Emergency Simulation (for demo)
+    socket.on('trigger-emergency', ({ doctorId, patientId }) => {
+       const emergencyVitals = {
+          heartRate: 155,
+          spo2: 88,
+          bp_sys: 190,
+          bp_dia: 110,
+          temp: 102.4,
+          timestamp: new Date(),
+          isCritical: true
+       };
+       io.to(doctorId).emit('vitals-feed', { patientId, vitals: emergencyVitals });
     });
 
     socket.on('disconnect', () => {
-      console.log('Socket disconnected:', socket.id);
+      console.log('User disconnected:', socket.id);
+      // Optional: Cleanup intervals if no one is in the doctor room
     });
   });
 };
-
-module.exports = socketHandlers;
